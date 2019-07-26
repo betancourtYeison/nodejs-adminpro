@@ -114,10 +114,11 @@ function saveFile(model, type, id, fileName, path, res){
 
     var lastPath = `./uploads/${type}/${model.img}`;
 
-    if(fs.existsSync(lastPath)){
+    if(model.img.length > 0 && fs.existsSync(lastPath)){
         fs.unlink(lastPath, err => {
             if (err){
-                return removeFile(path, 'Error removing img in server', res);
+                console.log('remove 1')
+                return removeFile(path, err, res);
             }
             updateType(model, res);
         });

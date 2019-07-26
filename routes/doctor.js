@@ -8,6 +8,40 @@ var app = express();
 // Import model
 var Doctor = require("../models/doctor");
 
+// ==========================================
+//  Get Doctor by ID
+// ==========================================
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+
+    Doctor.findById(id)
+        .populate('user', 'name email role google')
+        .populate('hospital')
+        .exec((err, doctor) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error finding doctor',
+                    errors: err
+                }); 
+            }
+
+            if (!doctor) {
+                return res.status(400).json({
+                    ok: false,
+                    message: `Doctor with id: ${id} not found`,
+                    errors: 'Doctor not found'
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                doctor: doctor
+            });
+            
+        });
+});   
+
 // ==================================================
 // Get all Doctors
 // ==================================================
@@ -18,7 +52,7 @@ app.get('/', (req, res, next) => {
     Doctor.find({})
         .skip(from)
         .limit(5)
-        .populate('user', 'name email')
+        .populate('user', 'name email role google')
         .populate('hospital')
         .exec((err, doctors) => {
             if(err){

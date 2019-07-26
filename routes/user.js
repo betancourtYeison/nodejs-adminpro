@@ -9,6 +9,40 @@ var app = express();
 // Import model
 var User = require("../models/user");
 
+// ==========================================
+//  Get User by ID
+// ==========================================
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+
+    User.findById(id)
+        .exec((err, user) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: 'Error finding user',
+                    errors: err
+                }); 
+            }
+
+            if (!user) {
+                return res.status(400).json({
+                    ok: false,
+                    message: `User with id: ${id} not found`,
+                    errors: 'User not found'
+                });
+            }
+
+            user.password = "=)";
+            
+            res.status(200).json({
+                ok: true,
+                user: user
+            });
+            
+        });
+});
+
 // ==================================================
 // Get all Users
 // ==================================================
@@ -16,7 +50,7 @@ app.get('/', (req, res, next) => {
     var from = req.query.from || 0;
     from = Number(from);
 
-    User.find({}, 'name email img role')
+    User.find({}, 'name email img role google')
         .skip(from)
         .limit(5)
         .exec((err, users) => {
@@ -49,7 +83,7 @@ app.get('/', (req, res, next) => {
 // ==================================================
 // Create new user
 // ==================================================
-app.post('/', mdAuthenticate.verifyToken, (req, res, next) => {
+app.post('/', (req, res, next) => {
     var body = req.body;
     var user = new User({
         name: body.name,
@@ -67,6 +101,8 @@ app.post('/', mdAuthenticate.verifyToken, (req, res, next) => {
                 errors: err
             });
         }
+
+        userSaved.password = ':)';
 
         res.status(201).json({
             success: true,

@@ -92,7 +92,7 @@ function searchHospitals(regex){
 function searchDoctors(regex){
     return new Promise((resolve, reject) => {
         Doctor.find({ name: regex })
-            .populate('user', 'name email role')
+            .populate('user', 'name email role google')
             .populate('hospital')
             .exec((err, doctors) => {
                 if(err){
