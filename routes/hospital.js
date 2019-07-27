@@ -15,7 +15,7 @@ app.get('/:id', (req, res) => {
     var id = req.params.id;
 
     Hospital.findById(id)
-        .populate('user', 'name email role google')
+        .populate('user', 'name email img role google')
         .exec((err, hospital) => {
             if (err) {
                 return res.status(500).json({

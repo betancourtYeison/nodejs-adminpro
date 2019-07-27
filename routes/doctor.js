@@ -15,7 +15,7 @@ app.get('/:id', (req, res) => {
     var id = req.params.id;
 
     Doctor.findById(id)
-        .populate('user', 'name email role google')
+        .populate('user', 'name email img role google')
         .populate('hospital')
         .exec((err, doctor) => {
             if (err) {
@@ -52,7 +52,7 @@ app.get('/', (req, res, next) => {
     Doctor.find({})
         .skip(from)
         .limit(5)
-        .populate('user', 'name email role google')
+        .populate('user', 'name email img role google')
         .populate('hospital')
         .exec((err, doctors) => {
             if(err){
